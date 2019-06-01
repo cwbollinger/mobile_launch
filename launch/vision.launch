@@ -1,0 +1,16 @@
+<launch>
+  <node name="camera_transform" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 base_link camera 10"/>
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/video0" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+  </node>
+  <include file="$(find mobile_launch)/launch/continuous_detection.launch">
+    <arg name="node_namespace" value="apriltags" />
+    <arg name="camera_name" value="usb_cam" />
+    <arg name="image_topic" value="image_raw" />
+  </include>
+</launch>

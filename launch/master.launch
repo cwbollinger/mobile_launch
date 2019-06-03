@@ -1,4 +1,0 @@
-<launch>
-  <include file="$(find mobile_launch)/launch/bringup_erratic_stack.launch" />
-  <include file="$(find mobile_launch)/launch/vision.launch" />
-</launch>

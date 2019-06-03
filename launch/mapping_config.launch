@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find mobile_launch)/launch/mapping_erratic_stack.launch" />
+  <include file="$(find erratic_navigation)/navigation_slam/move_base_slam.launch" />
+  <include file="$(find mobile_launch)/launch/cartographer.launch" />
+</launch>

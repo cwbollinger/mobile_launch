@@ -1,7 +1,7 @@
 <launch>
   <node name="camera_transform" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 base_link camera 10"/>
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
-    <param name="video_device" value="/dev/video0" />
+    <param name="video_device" value="/dev/video1" />
     <param name="image_width" value="640" />
     <param name="image_height" value="480" />
     <param name="camera_frame_id" value="usb_cam" />

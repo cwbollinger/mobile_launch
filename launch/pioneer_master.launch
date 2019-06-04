@@ -1,0 +1,38 @@
+<launch>
+  <include file="$(find mobile_launch)/launch/pioneer_vision.launch" />
+  <node pkg="map_server" type="map_server" name="map_server" args="/home/aadi/maps/walls.yaml"/>
+
+  <node pkg="rosaria" type="RosAria" name="RosAria">
+    <param name="port" value="/dev/pioneer"/>
+  </node>
+
+  <include file="$(find pioneer_test)/launch/pioneer_sensors.launch" />
+  <include file="$(find pioneer_test)/launch/pioneer_description.launch" />
+
+  <include file="$(find mobile_launch)/launch/amcl_pioneer.launch"/>
+  <!--
+  <node pkg="gmapping" type="slam_gmapping" name="gmapping">
+    <remap from="scan" to="base_scan"/>
+  </node>
+  -->
+
+  <include file="$(find pioneer_2dnav)/move_base.launch"/>
+
+  <node pkg="simple_navigation_goals" type="base_link_navigation_client" name="base_link_goal_client" output="screen"/>
+  <node pkg="simple_navigation_goals" type="map_navigation_client" name="map_goal_client" output="screen"/>
+
+  <include file="$(find pioneer_test)/launch/pioneer_controller_spin_recover.launch" />
+
+  <!--
+  <node pkg="mobile_launch" type="delatcher.py" name="delatcher" />
+  <node pkg="mobile_launch" type="tf_pose_pub.py" name="pose_pub" />
+  <node pkg="mobile_launch" type="follower.py" name="follower">
+    <param name="path_topic" value="/path"/>
+    <param name="cmd_topic" value="/cmd_vel"/>
+    <param name="num_times_spin" value="1"/>
+    <param name="found_switch_topic" value="/switch_found"/>
+    <param name="april_tag_frame1" value="switch_1"/>
+    <param name="april_tag_frame2" value="switch_2"/>
+  </node>
+  -->
+</launch>

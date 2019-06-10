@@ -38,38 +38,42 @@ class Follower():
             state = self.move_base_client.get_state()
 
             if success and state == GoalStatus.SUCCEEDED:
-                print('Made it!')
+                rospy.loginfo('Made it!')
             else:
-                move_base.cancel_goal()
-                print('Problem...')
+                self.move_base_client.cancel_goal()
+                rospy.logerr('Problem...')
+                rospy.logerr('Pose: {}'.format(pose))
 
         # spin around to check if APRIL tag is visible
         SWITCH_FOUND = False
         for i in range(self.num_times_spin):
 
-            if (tf_listener.frameExists(self.april_tag_frame1) or tf_listener.frameExists(self.april_tag_frame2)):
+            if (self.tf_listener.frameExists(self.april_tag_frame1) or self.tf_listener.frameExists(self.april_tag_frame2)):
                 SWITCH_FOUND = True
+                rospy.loginfo('FOUND THE SWITCH')
                 break
 
             if not SWITCH_FOUND:
+                rospy.loginfo('SPINNING')
                 cmd = Twist()
                 cmd.linear.x = 0.0
                 cmd.linear.y = 0.0
                 cmd.linear.z = 0.0
                 cmd.angular.x = 0.0
                 cmd.angular.y = 0.0
-                cmd.angular.z = 0.1
+                cmd.angular.z = 0.15
                 self.spin_pub.publish(cmd)
 
                 rospy.sleep(.5)
 
         # publish if switch was found
-        switch_found_pub.publish(SWITCH_FOUND)
+        self.switch_found_pub.publish(SWITCH_FOUND)
 
 
 if __name__ == '__main__':
 
-    rospy.init_node('path_follower')
+    rospy.init_node('path_follower', log_level=rospy.INFO)
+    rospy.loginfo("WE BE ALL UP IN THIS INFO")
     path_topic = rospy.get_param('~path_topic')
     cmd_topic = rospy.get_param('~cmd_topic')
     april_tag_frame1 = rospy.get_param('~april_tag_frame1')

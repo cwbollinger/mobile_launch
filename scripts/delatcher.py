@@ -7,7 +7,7 @@ from nav_msgs.msg import OccupancyGrid
 class Delatcher(object):
     def __init__(self):
         self.map = None
-        rospy.Subscriber('/move_base_node/global_costmap/costmap', OccupancyGrid, self.map_cb)
+        rospy.Subscriber('/move_base/global_costmap/costmap', OccupancyGrid, self.map_cb)
         self.delatch_pub = rospy.Publisher('/costmap_repeating', OccupancyGrid, queue_size=1)
 
     def map_cb(self, msg):

@@ -1,15 +1,35 @@
 <launch>
-  <include file="$(find mobile_launch)/launch/pioneer_vision.launch" />
+  <node name="camera_transform" pkg="tf" type="static_transform_publisher" args="0.0 0.0 0.02 3.14 -1.77 0.0 camera_link usb_cam 10"/>
+
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
+    <param name="video_device" value="/dev/video1" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="io_method" value="mmap" />
+    <param name="camera_info_url" value="file://$(find mobile_launch)/config/ost_pioneer.yaml" />
+  </node>
+
+  <include file="$(find mobile_launch)/launch/continuous_detection.launch">
+    <arg name="node_namespace" value="apriltags" />
+    <arg name="camera_name" value="usb_cam" />
+    <arg name="image_topic" value="image_raw" />
+    <arg name="camera_frame" value="usb_cam" />
+  </include>
+
   <node pkg="map_server" type="map_server" name="map_server" args="/home/aadi/maps/mobile_touchup.yaml"/>
 
   <node pkg="rosaria" type="RosAria" name="RosAria">
     <param name="port" value="/dev/pioneer"/>
+    <remap from="RosAria/cmd_vel" to="/cmd_vel"/>
   </node>
 
   <include file="$(find pioneer_test)/launch/pioneer_sensors.launch" />
   <include file="$(find pioneer_test)/launch/pioneer_description.launch" />
 
   <include file="$(find mobile_launch)/launch/amcl_pioneer.launch"/>
+
   <!--
   <node pkg="gmapping" type="slam_gmapping" name="gmapping">
     <remap from="scan" to="base_scan"/>

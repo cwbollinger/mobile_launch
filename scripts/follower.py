@@ -27,6 +27,7 @@ class Follower():
         # execute received path to room
         poses = msg.poses
         for pose in poses:
+            rospy.loginfo('Navigating to pose {}'.format(pose))
 
             goal = MoveBaseGoal()
             goal.target_pose.header.frame_id = pose.header.frame_id

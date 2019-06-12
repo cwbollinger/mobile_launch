@@ -34,4 +34,7 @@
     <param name="april_tag_frame1" value="switch_1"/>
     <param name="april_tag_frame2" value="switch_2"/>
   </node>
+
+  <node pkg="ros_marker_detection" type="detect_and_move.py" name="switch_approacher" output="screen"/>
+  <node pkg="ros-handshake" type="agreer.py" name="agreer" output="screen"/>
 </launch>

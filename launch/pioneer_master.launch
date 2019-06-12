@@ -1,5 +1,5 @@
 <launch>
-  <node name="camera_transform" pkg="tf" type="static_transform_publisher" args="0.0 0.0 0.02 3.14 -1.77 0.0 camera_link usb_cam 10"/>
+  <node name="camera_transform" pkg="tf" type="static_transform_publisher" args="0.0 0.0 0.02 3.14 -1.57 0.0 camera_link usb_cam 10"/>
 
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
     <param name="video_device" value="/dev/video1" />
@@ -49,7 +49,7 @@
 
   <node pkg="mobile_launch" type="delatcher.py" name="delatcher" />
   <node pkg="mobile_launch" type="tf_pose_pub.py" name="pose_pub" />
-  <node pkg="mobile_launch" type="follower.py" name="follower">
+  <node pkg="mobile_launch" type="follower.py" name="follower" output="screen">
     <param name="path_topic" value="/path"/>
     <param name="cmd_topic" value="/cmd_vel"/>
     <param name="num_times_spin" value="65"/>
@@ -57,4 +57,7 @@
     <param name="april_tag_frame1" value="switch_1"/>
     <param name="april_tag_frame2" value="switch_2"/>
   </node>
+
+  <node pkg="ros_marker_detection" type="detect_and_move.py" name="switch_approacher" output="screen"/>
+  <node pkg="ros-handshake" type="arbitrator.py" name="arbitrator" output="screen"/>
 </launch>

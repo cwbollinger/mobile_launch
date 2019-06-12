@@ -6,6 +6,7 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from std_msgs.msg import Bool
 from geometry_msgs.msg import Pose, Twist
 from actionlib_msgs.msg import GoalStatus
+from apriltag_ros.msg import AprilTagDetectionArray
 from nav_msgs.msg import Path
 from tf import TransformListener
 
@@ -18,9 +19,17 @@ class Follower():
         self.num_times_spin = num_times_spin
         self.move_base_client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
         self.move_base_client.wait_for_server()
-        path_sub = rospy.Subscriber(path_topic, Path, self.path_callback)
+        self.path_sub = rospy.Subscriber(path_topic, Path, self.path_callback)
+        self.tag_sub = rospy.Subscriber('/tag_detections', AprilTagDetectionArray, self.tag_callback)
         self.spin_pub = rospy.Publisher(cmd_topic, Twist, queue_size=1)
         self.switch_found_pub = rospy.Publisher(found_switch_topic, Bool, queue_size=1)
+        self.currently_seen_tags = []
+
+
+    def tag_callback(self, msg):
+        self.currently_seen_tags = []
+        for tag in msg.detections:
+            self.currently_seen_tags.append(tag.pose.header.frame_id)
 
     def path_callback(self, msg):
 
@@ -49,7 +58,8 @@ class Follower():
         SWITCH_FOUND = False
         for i in range(self.num_times_spin):
 
-            if (self.tf_listener.frameExists(self.april_tag_frame1) or self.tf_listener.frameExists(self.april_tag_frame2)):
+            # if (self.tf_listener.frameExists(self.april_tag_frame1) or self.tf_listener.frameExists(self.april_tag_frame2)):
+            if len(self.currently_seen_tags) > 0:
                 SWITCH_FOUND = True
                 rospy.loginfo('FOUND THE SWITCH')
                 break
